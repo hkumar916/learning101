@@ -4,6 +4,8 @@ const i18next = require("i18next")
 const backend = require("i18next-fs-backend")
 const middleware = require("i18next-http-middleware")
 const mongoose = require("mongoose");
+const cors = require("cors")
+const categoryRouter = require("./routes/category.routes")
 
 const app = express()
 
@@ -20,8 +22,16 @@ i18next
         }
     })
     
-
 app.use(middleware.handle(i18next))
+app.use(express.json())
+app.use(cors({
+    origion: ["htp://localhost:3000", "https://project01-nodejs.onrender.com"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"]
+}))
+
+app.use(`${API}/categories`, categoryRouter)
 
 app.get(`${API}/health`, (req, res) => {
 
