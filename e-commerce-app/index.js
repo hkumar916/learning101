@@ -13,16 +13,16 @@ const PORT = process.env.PORT
 const API = process.env.API
 
 i18next
-    .use(backend)
-    .use(middleware.LanguageDetector)
-    .init({
-        fallbackLng: "en",
-        backend: {
-            loadPath: "locales/{{lag}}.json"
-        }
-    })
+  .use(backend)
+  .use(middleware.LanguageDetector)
+  .init({
+    fallbackLng: "en",
+    backend:{
+      loadPath: "locales/{{lng}}.json"
+    }
+  })
     
-app.use(middleware.handle(i18next))
+
 app.use(express.json())
 app.use(cors({
     origion: ["htp://localhost:3000", "https://project01-nodejs.onrender.com"],
@@ -30,7 +30,7 @@ app.use(cors({
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"]
 }))
-
+app.use(middleware.handle(i18next))
 app.use(`${API}/categories`, categoryRouter)
 
 app.get(`${API}/health`, (req, res) => {
