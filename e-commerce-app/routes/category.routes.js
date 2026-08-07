@@ -1,10 +1,11 @@
 import express from "express"
 import CategoryModel from "../models/category.model.js"
 //import { handleRouteError } from "../helpers/error-handling.js";
+import { adminOnly } from "../middleware/roles.middleware.js";
 
 const router = express.Router()
 
-router.post("/", async (req, res) => {
+router.post("/", adminOnly, async (req, res) => {
     try {
       if (!req.body.name || req.body.name.trim().length < 3) {
         return res.status(400).send({
@@ -49,7 +50,7 @@ router.get("/:id", async (req, res) => {
 });
 
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", adminOnly, async (req, res) => {
     try {
       const { id } = req.params;
       const deletedCategory = await CategoryModel.findByIdAndDelete(id);
@@ -63,5 +64,20 @@ router.delete("/:id", async (req, res) => {
   }
 );
 
+router.put("/:id", adminOnly,  async(req, res) => {
+    try{
+    const catg = await CategoryModel.findByIdAndUpdate(req.params.id, {
+      name: req.body.name
+    })
+    if(!catg) {
+      return res.status(404).send({message: req.t("categoryNotFound")})
+    }
+
+    return res.send({message: req.t("categoryUpdatedSuccessfully")})
+  }
+  catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+})
 //module.exports = router;
 export default router;
