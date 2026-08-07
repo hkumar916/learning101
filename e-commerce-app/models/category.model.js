@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"
+import { addCommonVirtuals } from "../helpers/mongoose-plugin.js";
 
 const categorySchema = mongoose.Schema({
   name: {
@@ -6,12 +7,7 @@ const categorySchema = mongoose.Schema({
   },
 });
 
-categorySchema.virtual("id").get(function () {
-  return this._id.toHexString();
-});
+categorySchema.plugin(addCommonVirtuals)
 
-categorySchema.set("toJSON", {
-  virtuals: true,
-});
-
-module.exports = mongoose.model("Category", categorySchema);
+//module.exports = mongoose.model("Category", categorySchema);
+export default mongoose.model("Category", categorySchema);

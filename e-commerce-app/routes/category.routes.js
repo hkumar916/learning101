@@ -1,5 +1,6 @@
-const express = require("express")
-const CategoryModel = require("../models/category.model")
+import express from "express"
+import CategoryModel from "../models/category.model.js"
+//import { handleRouteError } from "../helpers/error-handling.js";
 
 const router = express.Router()
 
@@ -62,4 +63,5 @@ router.delete("/:id", async (req, res) => {
   }
 );
 
-module.exports = router;
+//module.exports = router;
+export default router;

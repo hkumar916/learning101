@@ -1,14 +1,19 @@
-const express = require("express")
-require("dotenv").config()
-const i18next = require("i18next")
-const backend = require("i18next-fs-backend")
-const middleware = require("i18next-http-middleware")
-const mongoose = require("mongoose");
-const cors = require("cors")
-const categoryRouter = require("./routes/category.routes")
+//const express = require("express")
+import express from "express"
+import dotenv from "dotenv"
+import i18next from "i18next"
+import backend from "i18next-fs-backend"
+import middleware from "i18next-http-middleware"
+import mongoose from "mongoose"
+import cors from "cors"
+import morgan from "morgan"
+import categoryRouter from "./routes/category.routes.js"
+import authRouter from "./routes/auth.routes.js"
+import { authMiddleware } from "./middleware/auth.middleware.js"
 
 const app = express()
 
+dotenv.config()
 const PORT = process.env.PORT
 const API = process.env.API
 
@@ -31,12 +36,13 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"]
 }))
 app.use(middleware.handle(i18next))
-app.use(`${API}/categories`, categoryRouter)
-
+app.use(morgan("combined"))
 app.get(`${API}/health`, (req, res) => {
-
     res.send(req.t("validationFailed"))    
 })
+app.use(authMiddleware)
+app.use(`${API}/categories`, categoryRouter)
+app.use(`${API}/auth`, authRouter)
 
 app.listen(PORT, ()=> {
 
